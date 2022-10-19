@@ -2,11 +2,15 @@ package com.example.homework2_8.employeeService;
 
 import com.example.homework2_8.exception.EmployeeAlreadyAddedException;
 import com.example.homework2_8.exception.EmployeeNotFoundException;
+import com.example.homework2_8.exception.InvalidInputException;
 import com.example.homework2_8.model.Employee;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -19,6 +23,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         @Override
         public Employee add(String firstName, String lastName, int salary, int department) {
+            validateInput(firstName,lastName);
+
             Employee employee = new Employee(firstName, lastName, salary, department);
             if (employeeList.contains(employee)) {
                 throw new EmployeeAlreadyAddedException(" Такой сотрудник уже есть");}
@@ -27,6 +33,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         @Override
         public Employee remove(String firstName, String lastName) {
+            validateInput(firstName,lastName);
+
             Employee employee = find(firstName,lastName);
             if (employeeList.contains(employee)) {
                 employeeList.remove(employee);
@@ -36,6 +44,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     @Override
     public Employee find(String firstName, String lastName) {
+            validateInput(firstName,lastName);
+
         final Optional<Employee> employee = employeeList.stream()
                 .filter(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName))
                 .findAny();
@@ -81,6 +91,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeList.add(new Employee("Ivan", "Grozniy", 100_000, 2));
         employeeList.add(new Employee("Ekaterina", "Velikaya", 120_000, 2));
         return employeeList;
+    }
+    private void validateInput (String firstName, String lastName){
+            if( !(isAlpha(firstName) && isAlpha(lastName))) {
+                throw new InvalidInputException();
+            }
     }
 }
 

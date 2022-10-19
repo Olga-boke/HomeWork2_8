@@ -22,4 +22,8 @@ public interface EmployeeService {
     List<Employee> printAll();
 
     List<Employee> fillEmployeesList();
+
+    private void validateInput(String firstName, String lastName) {
+
+    }
 }
